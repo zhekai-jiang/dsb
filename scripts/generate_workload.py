@@ -21,19 +21,19 @@ def get_query_template_files(dir, filenames):
 		return result
 
 def gen_gaussian_dist(exec_dir, options):
-	exec_path = os.path.join(exec_dir, 'distcomp.exe')
-	cmd = [exec_path, '/i', 'tpcds.dst', '/o', 'tpcds.idx', '/param_dist', 'normal', '/verbose']
+	exec_path = os.path.join(exec_dir, 'distcomp')
+	cmd = [exec_path, '-i', 'tpcds.dst', '-o', 'tpcds.idx', '-param_dist', 'normal', '-verbose']
 	if 'param_sigma' in options:
-		cmd.append('/param_sigma')
+		cmd.append('-param_sigma')
 		cmd.append(str(options['param_sigma']))
 	if 'param_center' in options:
-		cmd.append('/param_center')
+		cmd.append('-param_center')
 		cmd.append(str(options['param_center']))
 	if 'rngseed' in options and options['rngseed'] is not None:
-		cmd.append('/rngseed')
+		cmd.append('-rngseed')
 		cmd.append(str(options['rngseed']))
 	print(' '.join(cmd))
-	subprocess.run(cmd, shell=True, cwd = exec_dir)
+	subprocess.run(cmd, cwd = exec_dir)
 
 def generate_queries(exec_dir, output_dir, tmp_dir, template_filename, dialect, options):
 	print('generate queries for template ' + template_filename + ' to ' + output_dir)
@@ -46,18 +46,18 @@ def generate_queries(exec_dir, output_dir, tmp_dir, template_filename, dialect, 
 	if not os.path.exists(query_dir):
 		os.makedirs(query_dir)
 
-	exec_path = os.path.join(exec_dir, 'dsqgen.exe')
-	cmd = [exec_path, '/output_dir', tmp_dir, '/streams', str(options['instance_count']),
-			'/directory', os.path.dirname(template_filename),
-			'/template', os.path.basename(template_filename), '/dialect', dialect]
+	exec_path = os.path.join(exec_dir, 'dsqgen')
+	cmd = [exec_path, '-output_dir', tmp_dir, '-streams', str(options['instance_count']),
+			'-directory', os.path.dirname(template_filename),
+			'-template', os.path.basename(template_filename), '-dialect', dialect]
 	if 'param_dist' in options:
-		cmd.append('/param_dist')
+		cmd.append('-param_dist')
 		cmd.append(options['param_dist'])
 	if 'rngseed' in options:
-		cmd.append('/rngseed')
+		cmd.append('-rngseed')
 		cmd.append(str(options['rngseed']))
 	print(' '.join(cmd))
-	subprocess.run(cmd, shell=True, cwd = exec_dir)
+	subprocess.run(cmd, cwd = exec_dir)
 
 	# Rename the query instance files.
 	for i in range(options['instance_count']):
@@ -92,6 +92,6 @@ def generate_workload(workload_config):
 			generate_queries(exec_dir, dir, tmp_dir, query_template_file,
 										workload_config['dialect'], workload)
 
-workload_config_file = r'D:\scripts\workload_config.json'
+workload_config_file = r'/home/jzk/benchmarks/dsb/scripts/workload_config.json'
 workload_config = load_json(workload_config_file)
 generate_workload(workload_config)
