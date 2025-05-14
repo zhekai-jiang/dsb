@@ -12,16 +12,14 @@ tables = ['call_center',
 		]
 
 data_path = '/Users/Shared/dsb/data' # directory of data files
-db_name = 'dsb' # database name
 
-create_table = False # If create the tables
+create_table = False # Whether we need to create the tables
 
 con = duckdb.connect("/Users/Shared/dsb/dsb.db")
 
 # create tables
 if create_table:
 	sql_path = r'/Users/Shared/dsb/scripts/create_tables.sql'
-	# TODO: Confirm
 	with open(sql_path, 'r') as f:
 		sql_script = f.read()
 	con.sql(sql_script)
